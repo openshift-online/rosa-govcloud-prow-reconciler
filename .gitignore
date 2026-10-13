@@ -1,0 +1,18 @@
+# Never commit local secrets.
+.env
+.env.*
+!.env.example
+
+# Binaries / build output.
+/reconciler
+/conncheck
+/bin/
+/dist/
+/build/
+*.exe
+*.test
+*.out
+coverage.*
+
+# Local agent worktrees and state.
+/.claude/

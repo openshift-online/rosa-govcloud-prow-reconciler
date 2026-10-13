@@ -1,0 +1,13 @@
+version: "2"
+run:
+  modules-download-mode: vendor
+linters:
+  default: standard
+  enable:
+    - misspell
+  exclusions:
+    presets:
+      - std-error-handling # unchecked Close, Write and Fprint
+formatters:
+  enable:
+    - gofmt
