@@ -326,6 +326,32 @@ Red Hat's Go toolset in FIPS mode (`CGO_ENABLED=1`, `GOEXPERIMENT=strictfipsrunt
 system OpenSSL) on a UBI 9 minimal base; the entrypoint is `reconciler`, and
 `conncheck` is in `/usr/local/bin` too.
 
+For a commit-identified image, pass the full source commit explicitly:
+
+```bash
+VERSION=$(git rev-parse HEAD)
+make image VERSION="$VERSION" IMAGE="localhost/rosa-govcloud-prow-reconciler:$VERSION"
+podman run --rm "localhost/rosa-govcloud-prow-reconciler:$VERSION" -version
+```
+
+`make image` passes `VERSION` as the `BUILD_VERSION` build argument. Set it to the
+full source revision in automated builds too; it is not inferred by the
+`Containerfile`. The reconciler binary and the final image's `version`, `release`, and
+`org.opencontainers.image.version` labels use that value. Here `release` identifies
+the source commit, not a semantic release number. Direct container builds without
+the argument default to `dev`; the Makefile otherwise derives `VERSION` from
+`git describe`. A version string does not establish that the working tree is clean.
+`conncheck` has no version flag; invoking it without arguments performs connection
+checks, so do not use it as an offline image-version smoke test.
+
+The final image also declares its public project identity, source URL, and Apache
+2.0 license. Build-system creation timestamps and source-revision metadata must be
+verified on the resulting image; a local build does not establish trusted build
+provenance. Semantic version tags can be introduced separately. To consume an
+exact published image, record and use its verified digest rather than relying on
+a tag alone. Changing registry policy does not alter an existing image's labels;
+metadata changes require a rebuild.
+
 After changing dependencies, run `go mod tidy && go mod vendor` and commit `vendor/`.
 No runtime binaries are required.
 
