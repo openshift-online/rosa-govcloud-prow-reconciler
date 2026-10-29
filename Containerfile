@@ -1,5 +1,5 @@
 # Built from vendor/ only: no module downloads, so the build needs no network.
-FROM registry.access.redhat.com/ubi9/go-toolset:1.26 AS build
+FROM registry.access.redhat.com/ubi9/go-toolset:1.26.10-1793294290 AS build
 ARG BUILD_VERSION=dev
 COPY . .
 # FIPS: use the system OpenSSL for crypto, and refuse to run without it.
